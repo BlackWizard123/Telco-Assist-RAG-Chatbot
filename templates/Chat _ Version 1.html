@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
+        
+        #username{
+margin-right: 77px;
+        } 
         /* General Layout */
         html, body {
             height: 100%;
@@ -570,6 +574,106 @@
         #upload_form button:hover {
             background-color: #d9534f;
         }
+
+        #profile-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+            z-index: 1000;
+        }
+        #profile-popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #profile-popup-content h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #444;
+        }
+
+        #close-profile-popup {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+        }
+        #profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Add spacing between rows */
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Spacing between label, input, and button */
+        }
+
+        .form-row label {
+            flex: 1; /* Labels take equal space */
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-row input {
+            flex: 2; /* Inputs take more space */
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .edit-button {
+            flex: 0.5; /* Small size for buttons */
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #save-profile {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #save-profile:hover {
+            background-color: #218838;
+        }
+
+
         
 
         /* @keyframes colorChange {
@@ -623,6 +727,8 @@
     </style>
 
     <script>
+
+        
         $(document).ready(function () {
 
     //   +++++++++++++++++++ VECTOR STORE LOGICS ++++++++++++++++++++
@@ -1175,6 +1281,71 @@
             // loadPublicVectorDB();
             loadChatHistory();
         });
+
+        $(document).ready(function () {
+            // Open Profile Popup
+            $('#profile-dropdown a:contains("Profile")').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "/get_profile",
+                    method: "GET",
+                    success: function (data) {
+                        $('#first_name').val(data.first_name);
+                        $('#last_name').val(data.last_name);
+                        $('#phone').val(data.phone);
+                        $('#email').val(data.email);
+                        $('#google_api').val(data.google_api);
+                        $('#cohere_api').val(data.cohere_api);
+                        $('#huggingface_api1').val(data.huggingface_api1);
+                        $('#huggingface_api2').val(data.huggingface_api2);
+                        $('#username').val(data.username);
+                        $('#profile-popup').fadeIn();
+                    },
+                    error: function () {
+                        alert("Failed to load profile details.");
+                    }
+                });
+            });
+
+            // Close Profile Popup
+            $('#close-profile-popup').on('click', function () {
+                $('#profile-popup').fadeOut();
+            });
+
+            // Enable Editing
+            $('.edit-button').on('click', function () {
+                const field = $(this).data('field');
+                $(`#${field}`).prop('disabled', false).focus();
+            });
+
+            // Save Profile Changes
+            $('#save-profile').on('click', function () {
+                const data = {
+                    first_name: $('#first_name').val(),
+                    last_name: $('#last_name').val(),
+                    phone: $('#phone').val(),
+                    email: $('#email').val(),
+                    google_api: $('#google_api').val(),
+                    cohere_api: $('#cohere_api').val(),
+                    huggingface_api1: $('#huggingface_api1').val(),
+                    huggingface_api2: $('#huggingface_api2').val(),
+                };
+
+                $.ajax({
+                    url: "/update_profile",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert("Profile updated successfully.");
+                        $('#profile-popup').fadeOut();
+                    },
+                    error: function () {
+                        alert("Failed to update profile.");
+                    }
+                });
+            });
+        });
     </script>
 </head>
 <body>
@@ -1329,6 +1500,63 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+
+    <div id="profile-popup" style="display:none;">
+        <div id="profile-popup-content">
+            <span id="close-profile-popup">&times;</span>
+            <h2>Profile Details</h2>
+            <form id="profile-form">
+                <div class="form-row">
+                    <label >Username:</label>
+                    <input type="text" id="username" disabled>
+                </div>
+                <div class="form-row">
+                    <label>First Name:</label>
+                    <input type="text" id="first_name" disabled>
+                    <button type="button" data-field="first_name" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Last Name:</label>
+                    <input type="text" id="last_name" disabled>
+                    <button type="button" data-field="last_name" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Phone:</label>
+                    <input type="text" id="phone" disabled>
+                    <button type="button" data-field="phone" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Email:</label>
+                    <input type="email" id="email" disabled>
+                    <button type="button" data-field="email" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Google API Key:</label>
+                    <input type="text" id="google_api" disabled>
+                    <button type="button" data-field="google_api" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Cohere API Key:</label>
+                    <input type="text" id="cohere_api" disabled>
+                    <button type="button" data-field="cohere_api" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Hugging Face API Key 1:</label>
+                    <input type="text" id="huggingface_api1" disabled>
+                    <button type="button" data-field="huggingface_api1" class="edit-button">Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Hugging Face API Key 2:</label>
+                    <input type="text" id="huggingface_api2" disabled>
+                    <button type="button" data-field="huggingface_api2" class="edit-button">Edit</button>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="save-profile">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>
