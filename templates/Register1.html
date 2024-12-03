@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>telcoAssist Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alatsi&amp;display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome.min.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Bootstrap-Chat.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Footer-Dark.css') }}    ">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Cool-SB-Admin-Inspirate.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu-1.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Simple-Bootstrap-Chat.css') }}    ">
+
+    <script>
+        // This JavaScript function shows an alert if there are flashed messages
+        window.onload = function() {
+            let message = "{{ get_flashed_messages()[0] if get_flashed_messages() else '' }}";
+            if (message) {
+                alert(message);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span><img src="{{ url_for('static', filename='img/logo11.png') }}            " width="200" style="transform: translate(-3px) scale(1.36);"></span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-4"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse flex-grow-0 order-md-first" id="navcol-4">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="d-md-none my-2"><button class="btn btn-light me-2" type="button">Button</button><button class="btn btn-primary" type="button">Button</button></div>
+            </div>
+            <div class="d-none d-md-block"></div>
+        </div>
+    </nav>
+    <section class="position-relative py-4 py-xl-5" style="padding: -10px 0px;margin: -31px;">
+        <div class="container" style="border-color: var(--bs-red);">
+            <div class="row d-flex justify-content-center" style="border-style: none;border-radius: 51px;border-top-left-radius: 77px;background: url(&quot;static/img/fullsize/wallpapersden.com_windows-12-4k-gradient-bg_3840x2160.jpg&quot;) right, #ff9ba5;height: 519px;margin: -17px;padding: -15px;color: var(--bs-red);width: 1330px;">
+                <div class="col-md-6 col-lg-6 col-xl-4 col-xxl-6 offset-lg-0">
+                    <div class="card mb-5" style="height: 520px;">
+                        <div class="card-body d-flex flex-column align-items-center" style="transform: scale(0.90);margin: -37px;padding: -10px;height: 546px;color: var(--bs-red);width: 418.325px;">
+                            <form method="POST" action=" {{ url_for('register1') }}  " name="register1" style="padding: 20px 12px;margin: -34px;width: 705.325px;transform: translate(130px);height: 523px;">
+                                <div class="row">
+                                    <div class="col" style="padding: 11px;margin: 14px;">
+                                        <h1 style="text-align: center;color: var(--bs-dark);font-weight: bold;font-family: 'Open Sans', sans-serif;transform: translate(44px) scale(0.71);">Create a New Account</h1>
+                                    </div>
+                                </div>
+                                <div class="row" style="width: 718.325px;">
+                                    <div class="w-100"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col" style="text-align: right;"><label class="col-form-label" style="font-weight: bold;font-family: Merriweather, serif;font-size: 19px;">First Name&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</label></div>
+                                    <div class="col" style="text-align: right;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" required name= "first_name"type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row" style="text-align: center;padding: 1px;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Last Name</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" required name = "last_name" type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Username</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" required name = "username" type="text" data-bs-toggle="tooltip" data-bss-tooltip="" data-bs-placement="bottom" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;" title="Username must be unique"></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Email ID</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" required name= "email" type="email" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Phone Number</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control"  required name="phonenum" type="tel" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Enter Password</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" required name = "password" type="password" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row" style="font-weight: bold;text-align: center;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Confirm Password</label></div>
+                                    <div class="col" style="font-weight: bold;text-align: center;"><input class="form-control" name = "re_password" required type="password" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col"><button class="btn btn-primary" type="submit" style="text-align: center;transform: translate(245px) scale(1.29);padding: 7px 12px;margin: 23px;width: 189.0125px;background: var(--bs-red);">Next step -></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="w-100"></div>
+                <div class="w-100"></div>
+            </div>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}    "></script>
+    <script src="{{ url_for('static', filename='js/bs-init.js') }}      "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+    <script src="{{ url_for('static', filename='js/creative.js') }}      "></script>
+    <script src="{{ url_for('static', filename='css/Sidebar-Menu.css') }}" ></script>
+</body>
+
+</html>

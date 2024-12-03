@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>telcoAssist Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alatsi&amp;display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome.min.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Bootstrap-Chat.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Footer-Dark.css') }}    ">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Cool-SB-Admin-Inspirate.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu-1.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Simple-Bootstrap-Chat.css') }}    ">
+</head>
+<script>
+    // Redirect to the login page after 5 seconds
+    setTimeout(function() {
+        window.location.href = "{{ url_for('login_home') }}";
+    }, 5000);
+</script>
+<body>
+    <nav class="navbar navbar-light navbar-expand-md py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span><img src="{{ url_for('static', filename='img/logo11.png') }}  " width="200" style="transform: translate(-3px) scale(1.36);"></span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-4"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse flex-grow-0 order-md-first" id="navcol-4">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="d-md-none my-2"><button class="btn btn-light me-2" type="button">Button</button><button class="btn btn-primary" type="button">Button</button></div>
+            </div>
+            <div class="d-none d-md-block"></div>
+        </div>
+    </nav>
+    <section class="py-4 py-xl-5" style="color: var(--bs-red);background: #ffffff;">
+        <div class="container">
+            <div class="text-center p-4 p-lg-5">
+                <p class="fw-bold text-primary mb-2" style="font-size: 19px;color: var(--bs-red);">Hurray!!!!!!</p>
+                <h1 class="fw-bold mb-4" style="text-align: center;color: rgb(0,0,0);font-size: 30px;">Your Account has been successfully created; Now you can Login!</h1><button class="btn btn-primary fs-6 fw-normal me-2 py-2 px-4" type="button" style="background: var(--bs-red);padding: 28px 24px;">Redirect to Login page</button>
+            </div>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}    "></script>
+    <script src="{{ url_for('static', filename='js/bs-init.js') }}      "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+    <script src="{{ url_for('static', filename='js/creative.js') }}      "></script>
+    <script src="{{ url_for('static', filename='css/Sidebar-Menu.css') }}" ></script>
+</body>
+
+</html>

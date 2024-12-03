@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        /* General Layout */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            /* font-family: 'Roboto', sans-serif; */
+            background-color: #ffffff;
+        }
+
+        /* Markdown content styling for better readability */
+        .message h1, h2, h3, h4 {
+            margin: 8px 0;
+            font-weight: bold;
+        }
+
+        .message p {
+            margin: 8px 0;
+        }
+
+        .message a {
+            color: #0084ff;
+            text-decoration: none;
+        }
+
+        .message a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading message style */
+        .loading-message {
+            color: #999999;
+            font-style: italic;
+        }
+
+        /* Adjust chat log layout */
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .message {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Style for tables */
+        .message table {
+            width: 100%;
+            border-collapse: collapse; /* Remove space between table borders */
+            margin-top: 10px;
+        }
+
+        .message table, .message th, .message td {
+            border: 1px solid #ddd; /* Light gray borders */
+        }
+
+        .message th, .message td {
+            padding: 10px;
+            text-align: left; /* Align text to the left */
+            /* font-family: 'Arial', sans-serif; */
+            font-size: 14px;
+        }
+
+        .message th {
+            background-color: #f2f2f2; /* Light background for headers */
+            font-weight: bold;
+        }
+
+        .message tr:nth-child(even) {
+            background-color: #f9f9f9; /* Alternating row colors */
+        }
+
+        /* Style for unordered lists */
+        .message ul {
+            list-style-type: disc; /* Circular bullets */
+            margin: 10px 20px; /* Adds some space around the list */
+            padding-left: 20px;
+        }
+
+        .message ul > li {
+            margin-bottom: 5px !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            background-color: transparent !important;
+            padding: 0 !important;
+            color: inherit !important;
+            border-radius: 0 !important;
+            cursor: auto !important;
+            /* margin-bottom: 5px; 
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            line-height: 1.5; */
+        }
+
+        /* Style for ordered lists */
+        .message ol {
+            list-style-type: decimal; /* Numbered bullets */
+            margin: 10px 20px; /* Adds some space around the list */
+            padding-left: 20px;
+        }
+
+        .message ol li {
+            margin-bottom: 5px; /* Adds spacing between list items */
+            /* font-family: 'Arial', sans-serif; */
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Sub-list style (nested lists) */
+        .message ul ul, .message ol ol {
+            list-style-type: circle; /* Nested lists have different bullet style */
+            margin-left: 20px;
+        }
+
+        #confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #confirm-modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+                
+        /* Top Bar */
+        #top-bar {  
+            background-image: linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%);
+            margin-left: 470px;
+            width: calc(80% - 300px);
+            border-radius: 10px;
+            background-color: #bb0000;
+            color: rgb(255, 255, 255);
+            padding: 12px;
+            cursor: pointer;
+            position:relative;
+            top: 6px;
+            z-index: 100;
+            font-size: 17px;
+            font-weight: 700;
+            text-align: center;
+            /* font-family: monospace; */
+            transition: background-color 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: background-size 1s ease-in-out;
+        }
+
+        #top-bar:hover {
+            background-color: #d9534f;
+        }
+
+        #logo{
+            width: 250px ;
+            height: 80px;
+            margin-left: -4px;
+            margin-top: -20px;
+        }
+
+        #operation-content {
+            margin-left: 300px;
+            background-color: #656565;
+            display: none;
+            padding: 10px;
+            border: 1px solid #bb0000;
+            border-radius: 5px;
+            position: absolute;
+            top: 60px;
+            width: 40%;
+            left: 20%;
+        }
+
+        #operation-content form {
+            margin-left: 60px;
+            width: 80%;
+            display: flex;
+            flex-direction: column; 
+            gap: 10px;
+
+        }
+
+        #operation-content input[type="text"], #operation-content input[type="file"] {
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #bdc3c7;
+            color: #2c3e50;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 300px;
+            background-color:  #2c3e50; 
+            color: white;
+            padding: 15px;
+            position: fixed;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #sidebar h1 {
+            color: #ffffff;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        #sidebar h2 {
+            color: #ecf0f1;
+            font-size: 16px;
+            margin-bottom: 10px;
+            margin-left: 0%;
+            text-align: center;
+        }
+
+        #operation-content  h2 {
+            color: #ecf0f1;
+            font-size: 16px;
+            margin-bottom: 10px;
+            margin-left: 42%;
+        }
+
+        h2 {
+            color: #000000;
+            font-size: 16px;
+            margin-bottom: 10px;
+            /* margin-left: 42%; */
+            text-align: center;
+        }
+
+        /* Scrollable Components */
+        .scrollable {
+            overflow-y: auto;
+            max-height: 200px;
+            margin-bottom: 15px;
+        }
+
+        .scrollable_uploads {
+            overflow-y: auto;
+            max-height: 260px;
+            margin-bottom: 15px;
+        }
+
+        .scrollable_store {
+            overflow-y: auto;
+            max-height: 350px;
+            margin-bottom: 15px;
+        }
+
+        .scrollable::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollable_store::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Chat Section */
+        #chat_section {
+            margin-left: 300px;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            height: 93%;
+            /* background-color: #ecf0f1; */
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 100%;
+        }
+
+        .user-message {
+            background-color: #f2cfcf;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #f7f9f9;
+            align-self: flex-start;
+        }
+
+        #chat_form {
+            display: flex;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        #user_input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            background-color:  #bb0000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px;
+
+        }
+
+        button[type="submit"]:hover {
+            background-color: #ffa2a2;
+        }
+
+        /* Scrollable Components */
+        #chat_log {
+            flex: 1;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Scrollable List Styling */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            background-color: #34495e;
+            padding: 8px;
+            margin-bottom: 5px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        ul li:hover {
+            background-color: #1abc9c;
+        }
+
+        /* #upload-document-content ul{
+
+        } */
+        
+        #user-settings {
+            margin-top: auto;
+        }
+
+        #user-settings button {
+            background-color: #ff6c6c;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        #user-settings-content {
+            display: none;
+        }
+
+        #user-settings:hover #user-settings-content {
+            display: block;
+        }
+
+        /* Style for the profile button */
+        #profile-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #bb0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px; /* Center the icon */
+        }
+
+        /* Hide the dropdown by default */
+        #profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        /* Style the dropdown links */
+        #profile-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        #profile-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Vector Library Button styling */
+        #vector-library-button {
+            background-image: linear-gradient(to right, #564dff 0%, #ff9191 51%, #4cff45 100%);
+            color: rgb(0, 0, 0);
+            font-weight: bolder;
+            border: none;
+            padding: 13px;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: -25px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+            /* font-family: monospace; */
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            box-shadow: 0 0 20px #5d5d5d;
+            border-radius: 10px;
+        }
+
+        #vector-library-button:hover {
+            background-position: right center; ;
+        }
+
+        /* Popup window styling */
+        #vector-library-popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 200; /* Higher than other content */
+        }
+
+        #vector-library-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 60%;
+            height: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #close-popup {
+            float: right;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        #vector-library-form input, #vector-library-form button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #vector-library-form button {
+            background-color: #bb0000;
+            color: white;
+            border: none;
+        }
+
+        #vector-library-form button:hover {
+            background-color: #d9534f;
+        }
+
+        /* Popup for uploading documents */
+        #upload-document-popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 200; /* Higher than other content */
+        }
+
+        #upload-document-content {
+            font-size: 15px;
+            width: 200px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            height: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #close-upload-popup {
+            float: right;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        #upload_form input {
+            width: 80%;
+            padding: 7px;
+            margin: 3px 10%;
+            border-radius: 5px;
+            border: 0.5px solid #ffdddd;
+            /* border-top: 0px;
+            border-left: 0px;   
+            border-right: 0px; */
+        }
+
+        #upload_form button {
+            width: 40%;
+            padding: 9px;
+            /* margin: 10px 10% ; */
+            margin-top: 15px;
+            margin-left: 30%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #bb0000;
+            color: white;
+            border: none;
+        }
+
+        #upload_form button:hover {
+            background-color: #d9534f;
+        }
+        
+
+        /* @keyframes colorChange {
+            0% { color: #ffffff; }
+            50% { color: #5d60ff; } 
+            100% { color: #ffffff; }  
+        }
+
+        #top-bar.animate-text {
+            animation: colorChange 2s ease-in-out;  
+        }  */
+
+        @keyframes colorSlide {
+            0% {
+                background-position: 0 0;  /* Start at left */
+            }
+            100% {
+                background-position: 200% 0;  /* Move to right */
+            }
+        }
+        /* linear-gradient(to right, #bb0000, #ff6161, #f95eda); Yellow to white */
+        #top-bar.animate-text {
+            background-image: linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%);
+            background-size: 300%;  /* Larger than the container to create movement */
+            animation: colorSlide 2s linear 5;  /* 1 second per loop, linear transition, repeat 5 times */
+            color: #ffffff;  /* Set text color to ensure visibility */
+        }
+
+        #top-bar .db-name {
+            font-size: 19px;  /* Slightly bigger font */
+            font-weight: bold;
+            background: linear-gradient(to right, rgb(71, 255, 30), rgb(56, 200, 145), rgb(24, 212, 21), rgb(125, 227, 125), rgb(52, 187, 34), rgb(80, 253, 100));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;  /* This makes the gradient visible */
+        }
+
+        #top-bar .vldb-name {
+            font-size: 19px;  /* Slightly bigger font */
+            font-weight: bold;
+            background: linear-gradient(to right, #4139dd 0%, #32a5ed 51%, #213fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;  /* This makes the gradient visible */
+        }
+
+        .hello-message {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+
+    //   +++++++++++++++++++ VECTOR STORE LOGICS ++++++++++++++++++++
+            // Fetch and display the folders in the My Vector Store component
+            loadVectorStores()
+            loadVectorLibrary()
+            loadChatHistory()
+
+            function loadVectorLibrary() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('chat_bp.get_vector_library') }}"  ,//'/get_folders',  // URL of the Flask route
+                    success: function (response) {
+                        var folderList = $('#vector-library-folder-list');
+                        folderList.empty();  // Clear any existing list items
+
+                        response.folders.forEach(function (folder) {
+                            //folderList.append('<li>' + folder + ' <button class="delete-folder" data-folder="' + folder + '" style="border:none; background:none; color:red; cursor:pointer;">&times;</button></li>');
+                            folderList.append('<li>' + folder + '</li>');
+                            // folderList.append('<li>' + folder + '</li>');
+                        });
+                    },
+                    error: function () {
+                        console.log('Failed to fetch vector stores');
+                    }
+                });
+            }
+
+            function loadVectorStores() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('chat_bp.get_folders') }}"  ,//'/get_folders',  // URL of the Flask route
+                    success: function (response) {
+                        var folderList = $('#previous-creations');
+                        folderList.empty();  // Clear any existing list items
+
+                        response.folders.forEach(function (folder) {
+                            //folderList.append('<li>' + folder + ' <button class="delete-folder" data-folder="' + folder + '" style="border:none; background:none; color:red; cursor:pointer;">&times;</button></li>');
+                            folderList.append('<li>' + folder + '<button class="delete-folder" data-folder="' + folder + '" style="border: white; background:none; color:orange; cursor:pointer; float: right;">&times;</button></li>');
+                            // folderList.append('<li>' + folder + '</li>');
+                        });
+                    },
+                    error: function () {
+                        console.log('Failed to fetch vector stores');
+                    }
+                });
+            }
+
+            // Click handler for the vector store list items
+            $('#previous-creations').on('click', 'li', function () {
+                var folderName = $(this).text(); // Get the folder name
+                $('#confirm-use').data('folder', folderName); // Set data attribute with folder name
+                $('#confirm-modal').fadeIn(); // Show confirmation modal
+            });
+
+            // Cancel button handler
+            $('#cancel-use').on('click', function () {
+                $('#confirm-modal').fadeOut(); // Hide modal on cancel
+            });
+
+            // Confirm button handler
+            $('#confirm-use').on('click', function () {
+                var folderName = $(this).data('folder');
+                loadVectorDB(folderName); // Load the vector DB with the folder name
+                $('#confirm-modal').fadeOut(); // Hide modal
+            });
+
+            // // Click handler for the delete button
+            $('#previous-creations').on('click', '.delete-folder', function (event) {
+                event.stopPropagation(); // Prevent triggering the parent li click event
+                var folderName = $(this).data('folder'); // Get the folder name from data attribute
+
+                // Optional: Show a confirmation dialog before deletion
+                if (confirm('Are you sure you want to delete this folder?')) {
+                    // Call your Flask endpoint to delete the folder
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ url_for('chat_bp.delete_folder') }}", // URL of the Flask delete route
+                        data: { folder: folderName }, // Pass the folder name
+                        success: function (response) {
+                            loadVectorStores(); // Reload the folder list
+                            loadChatHistory();
+                            console.log('Folder deleted successfully');
+                        },
+                        error: function () {
+                            console.log('Failed to delete the folder');
+                        }
+                    });
+                }
+            });
+
+        
+            function loadVectorDB(folderName) {
+                $.ajax({
+                    url:  '/chat/load_vector_db', //"{{ url_for('chat_bp.load_vector_db') }}",  // Adjust your backend URL
+                    type: "POST",
+                    data: { folder: folderName },
+                    success: function (response) {
+                        // alert("Vector store loaded: " + folderName);
+                            // Update the top bar text dynamically
+                        $('#chat_log').empty();
+                        $('#top-bar').html('Using <span class="db-name">' + response.db_name + '</span> from your vector store');
+
+                        setTimeout(function() {
+                            $('#top-bar').addClass('animate-text');
+                        }, 50);
+                        
+                        // Listen for when the animation ends to reset back to original state
+                        $('#top-bar').on('animationend', function() {
+                            // Reset the background and text color to the original state
+                            $('#top-bar').removeClass('animate-text');
+                            $('#top-bar').css({
+                                'background-size': 'auto',  // Reset size to default
+                                'background-image': 'linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%)',  // Reset original gradient
+                                'color': 'rgb(255, 255, 255)'  // Reset text color to original
+                            });
+                        });
+                        // Update the file list in the upload document component
+                        var fileList = $('#upload-document-content ul');
+                        fileList.empty();  // Clear the current list
+                        response.files.forEach(function(file) {
+                            fileList.append('<li>' + file + 
+                                '<button style="border: white; background:none; color:orange; cursor:pointer;" onclick="deleteFile(event, \'' + file + '\')"> X </button></li>');
+                        });
+                        // $('#upload-document-popup').fadeIn();
+                        addMessage("bot", "Welcome, Ask your questions here!");
+
+                    },
+                    memory_chain_failure: function () {
+                        alert("Memory chain creation failed; cannot load Vector DB");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    retriever_initialization_failure: function () {
+                        alert("Retriever initialization failed; cannot load Vector DB");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    vectordb_missing: function () {
+                        alert("No Vector DB found with this Name");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    error: function () {
+                        alert("Error loading the vector store");
+                    }
+                });
+                loadChatHistory();
+            }
+
+
+            // vector library
+            $('#vector-library-folder-list').on('click', 'li', function () {
+                var folderName = $(this).text(); // Get the folder name
+                if (confirm('Are you sure you want to use this Vector DB?')) {
+                    loadPublicVectorDB(folderName)
+                }
+            });
+
+
+            // Cancel button handler
+            $('#cancel-use2').on('click', function () {
+                $('#confirm-modal2').fadeOut(); // Hide modal on cancel
+            });
+
+            // Confirm button handler
+            $('#confirm-use2').on('click', function () {
+                var folderName = $(this).data('folder');
+                loadPublicVectorDB(folderName); // Load the vector DB with the folder name
+                $('#confirm-modal2').fadeOut(); // Hide modal
+            });
+
+            function loadPublicVectorDB(folderName) {
+                $.ajax({
+                    url:  '/chat/load_public_vector_db', //"{{ url_for('chat_bp.load_vector_db') }}",  // Adjust your backend URL
+                    type: "POST",
+                    data: { folder: folderName },
+                    success: function (response) {
+                        // alert("Vector store loaded: " + folderName);
+                        $('#chat_log').empty();
+                        $('#top-bar').html('Using <span class="db-name">' + response.db_name + '</span> from <span class="vldb-name"> Vector Library </span>');
+
+                        setTimeout(function() {
+                            $('#top-bar').addClass('animate-text');
+                        }, 50);
+
+                        // Listen for when the animation ends to reset back to original state
+                        $('#top-bar').on('animationend', function() {
+                            // Reset the background and text color to the original state
+                            $('#top-bar').removeClass('animate-text');
+                            $('#top-bar').css({
+                                'background-size': 'auto',  // Reset size to default
+                                'background-image': 'linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%)',  // Reset original gradient
+                                'color': 'rgb(255, 255, 255)'  // Reset text color to original
+                            });
+                        });
+                    },
+                    memory_chain_failure: function () {
+                        alert("Memory chain creation failed; cannot load Vector DB");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    retriever_initialization_failure: function () {
+                        alert("Retriever initialization failed; cannot load Vector DB");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    vectordb_missing: function () {
+                        alert("No Vector DB found with this Name");
+                        // Now you can initialize the chatbot with this vector DB
+                        //initializeChatWithVectorDB(response.db); // Assuming response returns the necessary data to load the vector DB
+                    },
+                    error: function () {
+                        alert("Error loading the vector store");
+                    }
+                });
+            }
+
+    //  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+            // Chat form submission
+            $('#chat_form').on('submit', function (event) {
+                event.preventDefault();
+                var userMessage = $('#user_input').val();
+                $('#user_input').val('');
+                if (userMessage.trim() !== '') {
+                    addMessage('user', userMessage);
+                    sendMessage(userMessage);
+                }
+            });
+
+            // Handle the file upload form submission via AJAX
+            $('#upload_form').on('submit', function (event) {
+                event.preventDefault();  // Prevent the default form submission
+                
+                var formData = new FormData(this);  // Create a FormData object with the form data
+                
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),  // Use the form's action attribute as the URL
+                    data: formData,
+                    processData: false,  // Important: Don't process the data as a query string
+                    contentType: false,  // Important: Set the content type to false for file uploads
+                    success: function (response) {
+                        alert('Files uploaded successfully!');
+                        $('#chat_log').empty();
+                        $('#top-bar').html('Using <span class="db-name">' + response.db_name + '</span> from your vector store');
+
+                        setTimeout(function() {
+                            $('#top-bar').addClass('animate-text');
+                        }, 50);
+
+                        // Listen for when the animation ends to reset back to original state
+                        $('#top-bar').on('animationend', function() {
+                            // Reset the background and text color to the original state
+                            $('#top-bar').removeClass('animate-text');
+                            $('#top-bar').css({
+                                'background-size': 'auto',  // Reset size to default
+                                'background-image': 'linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%)',  // Reset original gradient
+                                'color': 'rgb(255, 255, 255)'  // Reset text color to original
+                            });
+                        });
+                        // Optionally, update the list of uploaded files dynamically without page reload
+                        updateFileList(response.files);  // Assuming response contains an updated file list
+                        loadVectorStores(); // Reload the folder list
+                        loadChatHistory();
+                        addMessage("bot", "Welcome, Ask your questions here!");
+                    },
+                    error: function () {
+                        alert('File upload failed. Please try again.');
+                    }
+                });
+            });
+
+
+            // JavaScript delete function
+            window.deleteFile = function deleteFile(event, filename) {
+                event.preventDefault();  // Prevent the form from submitting traditionally
+
+                console.log("Delete function called for: " + filename);  // Log for testing
+
+                // Make the AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: "/delete/" + filename, //'/delete/' + filename,  // Use form action URL
+                    success: function(response) {
+                        console.log("Success response: ", response);  // Log success
+                        showPopupMessage(response.success);
+                        $("li:contains('" + filename + "')").remove();  // Remove the item from the list
+                    },
+                    error: function(response) {
+                        console.log("Error response: ", response);  // Log error
+                        showPopupMessage(response.responseJSON.error);
+                    }
+                });
+            }
+
+
+            // Initialize the markdown-it parser
+            var md = window.markdownit();
+
+            function addMessage(sender, message) {
+                var parsedMessage = md.render(message);
+                // var messageElement = $('<div class="message ' + sender + '-message"></div>').text(message);
+                // Create a new message element with the parsed HTML
+                var messageElement = $('<div class="message ' + sender + '-message"></div>').html(parsedMessage);
+
+                $('#chat_log').append(messageElement);
+                loadChatHistory()
+                scrollToBottom();
+            }
+
+            function addMessage_history(sender, message) {
+                var parsedMessage = md.render(message);
+                // var messageElement = $('<div class="message ' + sender + '-message"></div>').text(message);
+                // Create a new message element with the parsed HTML
+                var messageElement = $('<div class="message ' + sender + '-message"></div>').html(parsedMessage);
+
+                $('#chat_log').append(messageElement);
+                loadChatHistory()
+            }
+            
+
+            function scrollToBottom() {
+                // $('#chat_log').scrollTop($('#chat_log')[0].scrollHeight);
+                var chatLog = $('#chat_log');
+                chatLog.animate({ scrollTop: chatLog.prop("scrollHeight") }, 500);
+            }
+
+            function sendMessage(message) {
+                addMessage('bot', 'Retrieving the best answer...');
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('chat_bp.ask_question') }}",  // Adjust the URL path
+                    data: { user_input: message },
+                    success: function (response) {
+                        $('.bot-message').last().remove();
+                        addMessage('bot', response.response);
+                    },
+                    error: function () {
+                        $('.bot-message').last().remove();
+                        addMessage('bot', 'Sorry, something went wrong.');
+                    }
+                });
+            }
+
+            function updateFileList(files) {
+                var fileList = $('#upload-document-content ul');
+                // fileList.empty();  // Clear the current list
+                files.forEach(function (file) {
+                fileList.append('<li>' + file + '<button style="border: white; background:none; color:orange; cursor:pointer; float: right; onclick="deleteFile(event, \'' + file + '\')"> X </button></li>');
+                // '<button class="delete-folder" data-folder="' + folder + '" style="border: white; background:none; color:orange; cursor:pointer; float: right;">&times;</button>
+                });
+            }
+
+// chat history
+            function loadChatHistory() {
+                $.ajax({
+                    url: "{{ url_for('chat_bp.load_chat_history') }}",
+                    method: 'GET',
+                    success: function(response) {
+                        const chatList = $('#chat-history');
+                        chatList.empty(); // Clear current history
+
+                        Object.keys(response).forEach((fileName) => {
+                            chatList.append(`<li data-file="${fileName}">${fileName.split('_chat.json')[0]}</li>`);
+                        });
+                    },
+                    error: function() {
+                        console.error('Error loading chat history');
+                    }
+                });
+            }
+
+            $('#chat-history').on('click', 'li', function() {
+                const chatFile = $(this).data('file');
+                loadChat(chatFile);
+            });
+
+            
+            function loadVectorDBwithChat(dbName, chatFile) {
+                $.ajax({
+                    url:  '/chat/load_vector_db_with_chat', //"{{ url_for('chat_bp.load_vector_db') }}",  // Adjust your backend URL
+                    type: "POST",
+                    data: { dbName: dbName, chatFile: chatFile },
+                    success: function (response) {
+                        if (response.status === 'success'){
+                            $('#top-bar').html('Using <span class="db-name">' + response.db_name + '</span> from your vector store');
+
+                            setTimeout(function() {
+                                $('#top-bar').addClass('animate-text');
+                            }, 50);
+                            
+                            // Listen for when the animation ends to reset back to original state
+                            $('#top-bar').on('animationend', function() {
+                                // Reset the background and text color to the original state
+                                $('#top-bar').removeClass('animate-text');
+                                $('#top-bar').css({
+                                    'background-size': 'auto',  // Reset size to default
+                                    'background-image': 'linear-gradient(to right, #c10000 0%, #ec0053a4 51%, #a90000 100%)',  // Reset original gradient
+                                    'color': 'rgb(255, 255, 255)'  // Reset text color to original
+                                });
+                            });
+                            // Update the file list in the upload document component
+                            var fileList = $('#upload-document-content ul');
+                            fileList.empty();  // Clear the current list
+                            response.files.forEach(function(file) {
+                                fileList.append('<li>' + file + 
+                                    '<button style="border: white; background:none; color:orange; cursor:pointer;" onclick="deleteFile(event, \'' + file + '\')"> X </button></li>');
+                            });
+                        
+                        }
+
+                        else if((response.status === 'vectorDB_unavailable')){
+                            $('#top-bar').html('Requested VectorDB Unavailable!');
+                            const chatLoadMessage = "## Looks like "+  response.db_name + " is deleted! You can't continue chat with this Vectordb :( ";
+                            console.log(chatLoadMessage);
+                            addMessage('bot',chatLoadMessage);
+                        }
+                    },
+                    error: function (jqXHR) {
+                        alert("Error loading the vector store");  
+                    }
+                });
+                loadChatHistory();
+            }
+
+            function loadChat(chatFile) {
+            $.ajax({
+                url: `load_chat?file=${chatFile}`,
+                method: 'GET',
+                success: function (response) {
+                    $('#chat_log').empty();
+                    const chatLoadMessage = "## "+ chatFile.replace('_chat.json', '') + " is loaded from Chat History";
+                    addMessage_history('bot',chatLoadMessage);
+                    response.conversations.forEach(({ question, answer }) => {
+                        addMessage_history('user', question);
+                        addMessage_history('bot', answer);
+                    });
+                    loadVectorDBwithChat(response.vector_db, chatFile)
+                },
+                error: function () {
+                    console.error('Error loading chat');
+                }
+            });
+        }
+     
+
+
+            //show pop up message
+            function showPopupMessage(message) {
+                var popup = $('<div class="popup-message">' + message + '</div>');
+                $('body').append(popup);
+
+                // Add CSS to style the popup message
+                popup.css({
+                    'position': 'fixed',
+                    'bottom': '20px',
+                    'right': '20px',
+                    'background-color': '#444',
+                    'color': '#fff',
+                    'padding': '10px 20px',
+                    'border-radius': '5px',
+                    'z-index': '1000',
+                    'box-shadow': '0 2px 10px rgba(0, 0, 0, 0.1)'
+                });
+
+                // Fade out and remove the popup after 3 seconds
+                setTimeout(function() {
+                    popup.fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+
+            // Function to handle the logout
+            function logout() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('chat_bp.logout') }}", // URL of the Flask logout route
+                    success: function (response) {
+                        if (response.success) {
+                            // Redirect to the login page after successful logout
+                            window.location.href = "{{ url_for('login_home') }}"; // Change this to your actual login URL
+                        }
+                    },
+                    error: function () {
+                        console.log('Logout failed');
+                    }
+                });
+            }
+
+            // Toggle dropdown visibility on button click
+            $('#profile-button').on('click', function() {
+                $('#profile-dropdown').slideToggle();
+            });
+
+            // Hide dropdown if clicked outside
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#profile-dropdown-container').length) {
+                    $('#profile-dropdown').slideUp();
+                }
+            });
+
+            // Show the popup when Vector Library button is clicked
+            $('#vector-library-button').on('click', function() {
+                $('#vector-library-popup').fadeIn();
+            });
+
+            // Close the popup when the 'x' button is clicked
+            $('#close-popup').on('click', function() {
+                $('#vector-library-popup').fadeOut();
+            });
+
+            // Close the popup when clicking outside the content area
+            $(window).on('click', function(event) {
+                if ($(event.target).is('#vector-library-popup')) {
+                    $('#vector-library-popup').fadeOut();
+                }
+            });
+
+            $('#top-bar').on('click', function() {
+                $('#upload-document-popup').fadeIn();
+            });
+
+            // Close the popup when the 'x' button is clicked
+            $('#close-upload-popup').on('click', function() {
+                $('#upload-document-popup').fadeOut();
+            });
+
+            // Close the popup when clicking outside the content area
+            $(window).on('click', function(event) {
+                if ($(event.target).is('#upload-document-popup')) {
+                    $('#upload-document-popup').fadeOut();
+                }
+            });
+
+            // PROFILE DROPDOWN
+            // Click handler for the logout link
+            $('#profile-dropdown').on('click', 'a', function (event) {
+                if ($(this).text() === 'Logout') {
+                    event.preventDefault(); // Prevent default link behavior
+                    logout(); // Call the logout function
+                }
+            });
+
+
+
+            loadVectorStores(); // Reload the folder list
+            // loadPublicVectorDB();
+            loadChatHistory();
+        });
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div>
+            <!-- <h1>Telco Assist</h1> -->
+            <img id="logo" src="{{ url_for('static', filename='img/logo11.png') }}" >
+            <!-- Your previous creations (scrollable) -->
+            <br>
+
+            <button id="vector-library-button">Vector Library</button>
+
+        <br><br><br>
+
+            <div>
+                <h2>My Vector Store</h2>
+                <div class="scrollable">
+                    <ul id="previous-creations">
+                        <!-- Backend will populate this with folders -->
+                         <li> Loading... </li>
+
+                     </ul>
+                </div>
+            </div>
+
+            <hr color="gray">
+
+            <!-- Chat History (scrollable) -->
+            <div>
+                <h2>Chat history</h2>
+                <div class="scrollable">
+                    <ul id="chat-history">
+                        <!-- Backend will populate this with chat histories -->
+                        <li data-file="Evolution of 4g and 5g with examples">Evolution of 4g and 5</li>
+                        <li data-file="Introduction to AI and ML concepts">Introduction to AI and</li>
+                    </ul>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <!-- Expandable Top Bar -->
+    <div id="top-bar" style="box-shadow: 0 0 20px #a7a7a7;">
+        Upload your Document here   
+    </div>
+
+       <!-- Chat Section -->
+    <div id="chat_section">
+        <div id="chat_log">
+            <div class="message bot-message">
+                <p>Welcome! Ask your questions here.</p>
+            </div>
+        </div>
+        <form id="chat_form" method="post">
+            <input type="text" id="user_input" autocomplete="off" placeholder="Type your message..." />
+            <button type="submit">Ask</button>
+        </form>
+    </div>
+
+    <!-- Profile Button and Dropdown -->
+    <div id="profile-dropdown-container">
+        <button id="profile-button">&#x1F464;</button> <!-- Round button with a user icon -->
+        <div id="profile-dropdown">
+            <a href="#">Profile</a>
+            <a href="#">Settings</a>
+            <a href="#" id="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <!-- Vector Library Popup Window -->
+    <div id="vector-library-popup">
+        <div id="vector-library-content">
+            <span id="close-popup">&times;</span> <!-- Close button -->
+            <h2 style="font-size: 20px; font-weight: 800;">----- Vector Library -----</h2>
+                <!-- Search Bar -->
+                <div style="display: flex; align-items: center; margin-top: 20px;margin-bottom: 20px;">
+                    <input type="text" id="folder-search" placeholder="Search folders..." style="flex: 1; padding: 10px;">
+                    <button id="search-button" style="padding: 10px; background-color: #bb0000; color: white; border: none; border-radius: 5px; margin-left: 10px;">Search</button>
+                </div>
+                <h2 style="font-weight: 800;">Search results</h2>
+                <!-- Folder List -->
+                <div class="scrollable_store">
+                    <ul id="vector-library-folder-list">
+                        <!-- Backend will populate this dynamically -->
+
+                        <!-- More folders will be added here -->
+                    </ul>
+                </div>
+        </div>
+    </div>
+    
+    <div id="upload-document-popup">
+        <div id="upload-document-content">
+            <span id="close-upload-popup">&times;</span> <!-- Close button -->
+            <h2 style="font-size: 16px; font-weight: 1000;">----- Upload Your Document -----</h2>
+            <form id="upload_form" action="{{ url_for('chat_bp.upload_and_create_embeddings') }}" method="POST" enctype="multipart/form-data">
+                <input type="text" name="vecname" placeholder="Vector Store Name" required><br>
+                <input type="file" name="files" multiple><br>
+                <button type="submit">Upload</button>
+            </form>
+
+            <hr>
+            <h2 style="font-size: 16px; font-weight: 1000;">----- Uploaded Files -----</h2>
+            <div class="scrollable_uploads">
+                <ul>
+                    {% for filename in files %}
+                        <li>{{ filename }} 
+                            <button type="button" onclick="console.log('Delete clicked'); deleteFile(event, '{{ filename }}')">Delete</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <!-- <ul>
+                    {% for filename in files %}
+                        <li>{{ filename }}
+                            <form id="delete-form-{{ filename }}" method="POST" action="/delete/{{ filename }}" onsubmit="deleteFile(event, '{{ filename }}')">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul> -->
+                
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" style="display: none;">
+        <div id="confirm-modal-content">
+            <p>Are you sure you want to use this vector store?</p>
+            <button id="confirm-use" data-folder="">Use It</button>
+            <button id="cancel-use">Cancel</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal1" style="display: none;">
+        <div id="confirm-modal-content">
+            <p>Are you sure you want to delete this vector store?</p>
+            <button id="confirm-use1" data-folder="">Delete</button>
+            <button id="cancel-use1">Cancel</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal2" style="display: none;">
+        <div id="confirm-modal-content">
+            <p>Are you sure you want to use this vector store?</p>
+            <button id="confirm-use2" data-folder="">Use It</button>
+            <button id="cancel-use2">Cancel</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+
+</body>
+</html>

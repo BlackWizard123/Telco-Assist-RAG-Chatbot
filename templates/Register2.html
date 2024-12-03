@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>telcoAssist Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alatsi&amp;display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome.min.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Bootstrap-Chat.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Footer-Dark.css') }}    ">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Cool-SB-Admin-Inspirate.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu-1.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Sidebar-Menu.css') }}    ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Simple-Bootstrap-Chat.css') }}    ">
+</head>
+
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span><img src="{{ url_for('static', filename='img/logo11.png') }}              " width="200" style="transform: translate(-3px) scale(1.36);"></span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-4"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse flex-grow-0 order-md-first" id="navcol-4">
+                <div class="d-md-none my-2"><button class="btn btn-light me-2" type="button">Button</button><button class="btn btn-primary" type="button">Button</button></div>
+            </div>
+            <div class="d-none d-md-block"></div>
+        </div>
+    </nav>
+    <section class="position-relative py-4 py-xl-5" style="padding: -10px 0px;margin: -31px;">
+        <div class="container" style="border-color: var(--bs-red);">
+            <div class="row d-flex justify-content-center" style="border-style: none;border-radius: 51px;border-top-left-radius: 77px;background: url('{{ url_for('static', filename='img/fullsize/wallpapersden.com_windows-12-4k-gradient-bg_3840x2160.jpg') }}') right, #ff9ba5;height: 519px;margin: -17px;padding: -15px;color: var(--bs-red);width: 1330px;">
+                <div class="col-md-6 col-lg-6 col-xl-4 col-xxl-6 offset-lg-0">
+                    <div class="card mb-5" style="height: 520px;width: 716px;padding: 31px;margin: -2px;opacity: 1;">
+                        <div class="card-body d-flex flex-column align-items-center" style="transform: scale(0.90);margin: -37px;padding: -10px;height: 546px;color: var(--bs-red);width: 418.325px;">
+                            <form method = "POST" action = "/registerkeys/{{ username }}" name="password" placeholder="Password" style="padding: -7px 12px;margin: -51px;width: 705.325px;transform: translate(202px) scale(0.86);height: 523px;">
+                                <div class="row">
+                                    <div class="col" style="padding: 11px;margin: 14px;">
+                                        <h1 style="text-align: center;color: var(--bs-dark);font-weight: bold;font-family: 'Open Sans', sans-serif;transform: translate(-13px) scale(0.71);">API KEYS</h1>
+                                    </div>
+                                </div>
+                                <div class="row" style="width: 718.325px;">
+                                    <div class="w-100"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col" style="text-align: right;"><label class="col-form-label" style="font-weight: bold;font-family: Merriweather, serif;font-size: 19px;">Enter Google API Key&nbsp; &nbsp; &nbsp;</label></div>
+                                    <div class="col" style="text-align: right;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" name = "googleapi1" type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                    <div class="col" style="width: 321.113px;"><label class="form-label">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</label><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20" fill="none" class="fs-2 text-secondary">
+                                            <path d="M9 2C8.44772 2 8 2.44772 8 3C8 3.55228 8.44772 4 9 4H11C11.5523 4 12 3.55228 12 3C12 2.44772 11.5523 2 11 2H9Z" fill="currentColor"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM13.7071 10.7071C14.0976 10.3166 14.0976 9.68342 13.7071 9.29289C13.3166 8.90237 12.6834 8.90237 12.2929 9.29289L9 12.5858L7.70711 11.2929C7.31658 10.9024 6.68342 10.9024 6.29289 11.2929C5.90237 11.6834 5.90237 12.3166 6.29289 12.7071L8.29289 14.7071C8.68342 15.0976 9.31658 15.0976 9.70711 14.7071L13.7071 10.7071Z" fill="currentColor"></path>
+                                        </svg></div>
+                                </div>
+                                <div class="row" style="text-align: center;padding: 1px;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><a href="#">Get your Google API here</a></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">HuggingFace API&nbsp; 1</label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" name = "hfapi1" type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                    <div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20" fill="none" class="fs-2 text-secondary">
+                                            <path d="M9 2C8.44772 2 8 2.44772 8 3C8 3.55228 8.44772 4 9 4H11C11.5523 4 12 3.55228 12 3C12 2.44772 11.5523 2 11 2H9Z" fill="currentColor"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM13.7071 10.7071C14.0976 10.3166 14.0976 9.68342 13.7071 9.29289C13.3166 8.90237 12.6834 8.90237 12.2929 9.29289L9 12.5858L7.70711 11.2929C7.31658 10.9024 6.68342 10.9024 6.29289 11.2929C5.90237 11.6834 5.90237 12.3166 6.29289 12.7071L8.29289 14.7071C8.68342 15.0976 9.31658 15.0976 9.70711 14.7071L13.7071 10.7071Z" fill="currentColor"></path>
+                                        </svg></div>
+                                </div>
+                                <div class="row" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><br><strong>HuggingFace API&nbsp; 2</strong><br></label></div>
+                                    <div class="col" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"><input class="form-control" name = "hfapi2"  type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                    <div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20" fill="none" class="fs-2 text-secondary">
+                                            <path d="M9 2C8.44772 2 8 2.44772 8 3C8 3.55228 8.44772 4 9 4H11C11.5523 4 12 3.55228 12 3C12 2.44772 11.5523 2 11 2H9Z" fill="currentColor"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM13.7071 10.7071C14.0976 10.3166 14.0976 9.68342 13.7071 9.29289C13.3166 8.90237 12.6834 8.90237 12.2929 9.29289L9 12.5858L7.70711 11.2929C7.31658 10.9024 6.68342 10.9024 6.29289 11.2929C5.90237 11.6834 5.90237 12.3166 6.29289 12.7071L8.29289 14.7071C8.68342 15.0976 9.31658 15.0976 9.70711 14.7071L13.7071 10.7071Z" fill="currentColor"></path>
+                                        </svg></div>
+                                </div>
+                                <div class="row" style="font-weight: bold;text-align: center;">
+                                    <div class="col" style="padding: 32px;"><label class="form-label"></label><a href="#">Get your HuggingFace API here</a></div>
+                                </div>
+                                <div class="row" style="font-weight: bold;text-align: center;">
+                                    <div class="col"><label class="col-form-label" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;">Cohere Reranker API</label></div>
+                                    <div class="col"><input class="form-control" name = "cohereapi" type="text" style="text-align: center;font-weight: bold;font-family: Merriweather, serif;font-size: 19px;height: 56px;"></div>
+                                    <div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20" fill="none" class="fs-2 text-secondary">
+                                            <path d="M9 2C8.44772 2 8 2.44772 8 3C8 3.55228 8.44772 4 9 4H11C11.5523 4 12 3.55228 12 3C12 2.44772 11.5523 2 11 2H9Z" fill="currentColor"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM13.7071 10.7071C14.0976 10.3166 14.0976 9.68342 13.7071 9.29289C13.3166 8.90237 12.6834 8.90237 12.2929 9.29289L9 12.5858L7.70711 11.2929C7.31658 10.9024 6.68342 10.9024 6.29289 11.2929C5.90237 11.6834 5.90237 12.3166 6.29289 12.7071L8.29289 14.7071C8.68342 15.0976 9.31658 15.0976 9.70711 14.7071L13.7071 10.7071Z" fill="currentColor"></path>
+                                        </svg></div>
+                                </div>
+                                <div class="row" style="font-weight: bold;text-align: center;">
+                                    <div class="col" style="padding: 20px;"><a href="#">Get your Cohere API here</a></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col"><button class="btn btn-primary" type="submit" style="text-align: center;transform: translate(168px) scale(1.29);padding: 7px 12px;margin: 23px;width: 189.0125px;background: var(--bs-red);">Validate Keys</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="w-100"></div>
+                <div class="w-100"></div>
+            </div>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}    "></script>
+    <script src="{{ url_for('static', filename='js/bs-init.js') }}      "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+    <script src="{{ url_for('static', filename='js/creative.js') }}      "></script>
+    <script src="{{ url_for('static', filename='css/Sidebar-Menu.css') }}" ></script>
+</body>
+
+</html>

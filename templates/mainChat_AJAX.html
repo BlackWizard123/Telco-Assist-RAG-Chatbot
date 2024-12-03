@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        /* General Layout */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrolling */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Top Nav Bar */
+        #navbar {
+            background-color: #bb0000;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        #navbar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        #user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        #user-menu button {
+            background-color: #ff6c6c;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #user-menu-content {
+            display: none;
+            position: absolute;
+            background-color: #ffffff;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            right: 0;
+            z-index: 1;
+            width: 200px;
+        }
+
+        #user-menu-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        #user-menu-content a:hover {
+            background-color: #ff0000;
+        }
+
+        #user-menu:hover #user-menu-content {
+            display: block;
+        }
+
+        #container {
+            margin-top: 80px;
+            display: flex;
+            height: calc(100% - 80px); /* Ensure it takes full height except for the navbar */
+            background-color: #ecf0f1;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 300px;
+            background-color: #565656;
+            color: white;
+            padding: 20px;
+            overflow-y: auto; /* Add scroll for sidebar if content overflows */
+        }
+
+        #sidebar h2 {
+            color: #000000;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #sidebar input[type="text"], #sidebar input[type="file"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #bdc3c7;
+            color: #000000;
+        }
+
+        #sidebar button {
+            background-color: #bb0000;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #sidebar button:hover {
+            background-color: #ffa1a1;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #sidebar ul li {
+            background-color: #424242;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Chat Section */
+        #chat_section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #ecf0f1;
+        }
+
+        #chat_section h1 {
+            color: #34495e;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #chat_log {
+            flex: 1;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 100%;
+        }
+
+        .user-message {
+            background-color: #f2cfcf;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #f7f9f9;
+            align-self: flex-start;
+        }
+
+        #chat_form {
+            display: flex;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        #user_input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #ffa2a2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #container {
+                flex-direction: column;
+            }
+
+            #sidebar {
+                width: 100%;
+            }
+
+            #chat_section {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#chat_form').on('submit', function (event) {
+                event.preventDefault();
+                var userMessage = $('#user_input').val();
+                $('#user_input').val('');
+                if (userMessage.trim() !== '') {
+                    addMessage('user', userMessage);
+                    sendMessage(userMessage);
+                }
+            });
+
+            // Handle the file upload form submission via AJAX
+            $('#upload_form').on('submit', function (event) {
+                event.preventDefault();  // Prevent the default form submission
+                
+                var formData = new FormData(this);  // Create a FormData object with the form data
+                
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),  // Use the form's action attribute as the URL
+                    data: formData,
+                    processData: false,  // Important: Don't process the data as a query string
+                    contentType: false,  // Important: Set the content type to false for file uploads
+                    success: function (response) {
+                        alert('Files uploaded successfully!');
+                        // Optionally, update the list of uploaded files dynamically without page reload
+                        updateFileList(response.files);  // Assuming response contains an updated file list
+                    },
+                    error: function () {
+                        alert('File upload failed. Please try again.');
+                    }
+                });
+            });
+
+            function addMessage(sender, message) {
+                var messageElement = $('<div class="message ' + sender + '-message"></div>').text(message);
+                $('#chat_log').append(messageElement);
+                scrollToBottom();
+            }
+
+            function scrollToBottom() {
+                $('#chat_log').scrollTop($('#chat_log')[0].scrollHeight);
+            }
+
+            function sendMessage(message) {
+                addMessage('bot', 'Retrieving the best answer...');
+                $.ajax({
+                    type: 'POST',
+                    url:  "{{ url_for('chat_bp.ask_question') }}",             //    '/ask_question',
+                    data: { user_input: message },
+                    success: function (response) {
+                        $('.bot-message').last().remove();
+                        addMessage('bot', response.response);
+                    },
+                    error: function () {
+                        $('.bot-message').last().remove();
+                        addMessage('bot', 'Sorry, something went wrong.');
+                    }
+                });
+            }
+
+            function updateFileList(files) {
+                var fileList = $('#sidebar ul');
+                // fileList.empty();  // Clear the current list
+                files.forEach(function (file) {
+                fileList.append('<li>' + file + '<button onclick="deleteFile(\'' + file + '\')">Delete</button></li>');
+                });
+            }
+
+        });
+    </script>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <div id="navbar">
+        <h1>Telco Assist</h1>
+        <div id="user-menu">
+            <button>User Settings</button>
+            <div id="user-menu-content">
+                <a href="#">Profile</a>
+                <a href="#">Settings</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="container">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <h2>Upload Files</h2>
+            <form id = "upload_form" action="{{ url_for('chat_bp.upload_and_create_embeddings') }}" method="POST" enctype="multipart/form-data">
+                <input type="text" name="vecname" placeholder="Vector Store Name" required>
+                <input type="file" name="files" multiple>
+                <button type="submit">Upload</button>
+            </form>
+            <hr>
+            <h2>Uploaded Files</h2>
+            <ul>
+                {% for filename in files %}
+                    <li>{{ filename }} 
+                        <form action="{{ url_for('chat_bp.delete_file', filename=filename) }}" method="POST" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chat_section">
+            <div id="chat_log">
+                <div class="message bot-message">
+                    <p>Welcome! Ask your questions here.</p>
+                </div>
+            </div>
+            <form id="chat_form" method="post">
+                <input type="text" id="user_input" autocomplete="off" placeholder="Type your message..." />
+                <button type="submit">Send</button>
+            </form>
+		</div>
+    </div>
+
+</body>
+</html>
+
+
+
+
