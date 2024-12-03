@@ -156,6 +156,56 @@ def login():
 
     return render_template('Login.html')
 
+@app.route('/get_profile', methods=['GET'])
+def get_profile():
+    username = session.get('username')
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    conn = sqlite3.connect('TAUserDB.db')
+    c = conn.cursor()
+    c.execute("SELECT first_name, last_name, phone, email, google_api, cohere_api, huggingface_api1, huggingface_api2 FROM users WHERE username = ?", (username,))
+    user_data = c.fetchone()
+    conn.close()
+
+    if user_data:
+        return jsonify({
+            "first_name": user_data[0],
+            "last_name": user_data[1],
+            "phone": user_data[2],
+            "email": user_data[3],
+            "google_api": user_data[4],
+            "cohere_api": user_data[5],
+            "huggingface_api1": user_data[6],
+            "huggingface_api2": user_data[7],
+            "username": username
+        })
+    return jsonify({"error": "User not found"}), 404
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    data = request.json
+    username = session.get('username')
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    fields = ['first_name', 'last_name', 'phone', 'email', 'google_api', 'cohere_api', 'huggingface_api1', 'huggingface_api2']
+    updates = {field: data[field] for field in fields if field in data}
+
+    if not updates:
+        return jsonify({"error": "No fields to update"}), 400
+
+    placeholders = ', '.join([f"{field} = ?" for field in updates.keys()])
+    values = list(updates.values()) + [username]
+
+    conn = sqlite3.connect('TAUserDB.db')
+    c = conn.cursor()
+    c.execute(f"UPDATE users SET {placeholders} WHERE username = ?", values)
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Profile updated successfully"})
+
 
 
 # -------------------------------------------------------
